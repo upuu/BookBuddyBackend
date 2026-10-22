@@ -8,7 +8,16 @@
 // Reviews are still mocked — there is no backend endpoint yet.
 // ============================================================
 
-export const CURRENT_USER = 'Alice';
+// Demo profiles: seeded reading lists key off these names, and
+// signIn() maps alice@example.com -> Alice so the SVD demo shows
+// her real picks. Real accounts replace the auth stubs at the
+// bottom of this file.
+export const PROFILES = [
+  { name: 'Alice', initial: 'A', bg: '#00689E', fg: '#fff', rated: 'The Hobbit, Dune' },
+  { name: 'Bob', initial: 'B', bg: '#FFDD00', fg: '#0B2A3C', rated: 'Atomic Habits, Deep Work' },
+  { name: 'Charlie', initial: 'C', bg: '#0B2A3C', fg: '#FFDD00', rated: 'Foundation, The Hobbit' },
+  { name: 'Diana', initial: 'D', bg: '#BFE6F7', fg: '#0B2A3C', rated: 'Project Hail Mary, Deep Work' },
+];
 
 export const SERVER_ERROR_MESSAGE =
   "Can't reach the BookBuddy server. Start the Flask backend (python app.py), then refresh this page.";
@@ -71,7 +80,7 @@ export async function getBooks() {
   }));
 }
 
-export async function getRecommendations(user = CURRENT_USER, catalog = []) {
+export async function getRecommendations(user, catalog = []) {
   const response = await fetch('/api/recommendations', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -93,4 +102,48 @@ export async function getReviews(bookId) {
   await delay(120);
   // bookId is accepted but unused while reviews are mocked.
   return reviews.map((review) => ({ ...review }));
+}
+
+// ============================================================
+// Auth stubs — real-looking login without a backend.
+// When Flask ships register/login endpoints, replace ONLY the
+// bodies of these two functions (keep the signatures) and store
+// any token in App.jsx state.
+// ============================================================
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// "alice@example.com" resolves to the demo profile Alice so the
+// SVD model returns her real picks; anything else uses the email
+// local part as the display name (backend cold-starts those).
+function displayNameFromEmail(email) {
+  const local = email.split('@')[0];
+  const profile = PROFILES.find(
+    (entry) => entry.name.toLowerCase() === local.toLowerCase()
+  );
+  return profile ? profile.name : local;
+}
+
+export async function signIn(email, password) {
+  await delay(400);
+  if (!EMAIL_PATTERN.test(email.trim())) {
+    throw new Error('Enter a valid email address.');
+  }
+  if (!password) {
+    throw new Error('Enter your password.');
+  }
+  return { name: displayNameFromEmail(email.trim()) };
+}
+
+export async function createAccount(name, email, password) {
+  await delay(400);
+  if (!name.trim()) {
+    throw new Error('Enter your name.');
+  }
+  if (!EMAIL_PATTERN.test(email.trim())) {
+    throw new Error('Enter a valid email address.');
+  }
+  if (password.length < 6) {
+    throw new Error('Password must be at least 6 characters.');
+  }
+  return { name: name.trim() };
 }

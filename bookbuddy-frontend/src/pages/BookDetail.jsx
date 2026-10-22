@@ -8,6 +8,7 @@ const LIST_OPTIONS = [STATUS.want, STATUS.reading, STATUS.read];
 export default function BookDetail({
   bookId,
   catalog,
+  user,
   currentStatus,
   onSetStatus = () => {},
 }) {
@@ -50,7 +51,7 @@ export default function BookDetail({
   function postReview() {
     if (!canPost) return;
     setReviews((prev) => [
-      { user: 'Alice', stars: rating, text: reviewText.trim() },
+      { user, stars: rating, text: reviewText.trim() },
       ...prev,
     ]);
     setRating(0);

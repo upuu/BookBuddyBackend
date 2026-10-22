@@ -10,9 +10,13 @@ const BOOKMARK_MARK = (
   </svg>
 );
 
-// Current page gets a yellow underline via aria-current="page".
-// onNavigate is wired to App state in Step 6.
-export default function Nav({ page = '', onNavigate = () => {} }) {
+// Design unchanged from Step 2; the avatar is now a button that
+// returns to the profile picker (login) screen.
+export default function Nav({
+  page = '',
+  onNavigate = () => {},
+  user = 'New reader',
+}) {
   return (
     <nav className="nav" aria-label="Main">
       <span className="nav-brand">
@@ -39,9 +43,14 @@ export default function Nav({ page = '', onNavigate = () => {} }) {
         </button>
       </div>
 
-      <span className="nav-avatar" role="img" aria-label="Signed in as Alice">
-        A
-      </span>
+      <button
+        type="button"
+        className="nav-avatar"
+        aria-label={`Switch profile (current: ${user})`}
+        onClick={() => onNavigate('login')}
+      >
+        {user.charAt(0)}
+      </button>
     </nav>
   );
 }

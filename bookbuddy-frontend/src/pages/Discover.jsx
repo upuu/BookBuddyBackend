@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  getRecommendations,
-  CURRENT_USER,
-  SERVER_ERROR_MESSAGE,
-} from '../api.js';
+import { getRecommendations, SERVER_ERROR_MESSAGE } from '../api.js';
 import Cover from '../components/Cover.jsx';
 import Stars from '../components/Stars.jsx';
 
@@ -11,6 +7,7 @@ const FILTERS = ['All', 'Sci-Fi', 'Fantasy', 'Mystery', 'Self-help'];
 
 export default function Discover({
   catalog,
+  user,
   onOpenBook = () => {},
   onAddToList = () => {},
 }) {
@@ -20,12 +17,14 @@ export default function Discover({
   const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState('All');
 
+  // Re-fetches whenever the catalog or the selected user changes,
+  // so switching users in the nav updates the picks live.
   useEffect(() => {
     let alive = true;
     setLoading(true);
     setError(null);
 
-    getRecommendations(CURRENT_USER, catalog)
+    getRecommendations(user, catalog)
       .then((result) => {
         if (!alive) return;
         setBooks(result.books);
@@ -41,7 +40,7 @@ export default function Discover({
     return () => {
       alive = false;
     };
-  }, [catalog]);
+  }, [catalog, user]);
 
   const visibleBooks =
     activeFilter === 'All'
@@ -52,7 +51,7 @@ export default function Discover({
 
   return (
     <main className="page">
-      <h1>Good evening, Alice</h1>
+      <h1>Good evening, {user}</h1>
       <p className="page-sub">
         Picked for you from your ratings and favorite genres.
       </p>
