@@ -253,3 +253,101 @@ button {
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* --- Shared page layout --- */
+.page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+.page h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.page h2 {
+  margin: 8px 0 16px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.page-sub {
+  margin-bottom: 20px;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.empty-note {
+  padding: 24px 0;
+  color: var(--muted);
+}
+
+/* --- Discover --- */
+.filter-chips {
+  justify-content: flex-start;
+  margin-bottom: 24px;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.book-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.cover-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.card-title {
+  margin-top: 8px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.card-author {
+  font-size: 0.95rem;
+  color: var(--navy);
+}
+
+.card-reason {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Outlined action: blue border/text on white (allowed pairing) */
+.btn-outline {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 10px;
+  background: #ffffff;
+  border: 2px solid var(--blue);
+  border-radius: 999px;
+  color: var(--blue);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background: var(--sky);
+}

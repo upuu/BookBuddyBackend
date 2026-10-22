@@ -17,7 +17,17 @@ export default function App() {
       {page !== 'onboarding' && <Nav />}
 
       {page === 'onboarding' && <Onboarding onNavigate={setPage} />}
-      {page === 'discover' && <Discover />}
+      {page === 'discover' && (
+        <Discover
+          onOpenBook={(id) => {
+            setSelectedBookId(id);
+            setPage('book');
+          }}
+          onAddToList={(id) =>
+            setLists((prev) => ({ ...prev, [id]: 'want' }))
+          }
+        />
+      )}
       {page === 'book' && <BookDetail bookId={selectedBookId} />}
       {page === 'lists' && <Lists />}
     </>

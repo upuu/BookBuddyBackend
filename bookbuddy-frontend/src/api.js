@@ -28,6 +28,7 @@ export const GENRES = [
 
 // Mock catalog. Kept private on purpose: pages must get books
 // through the async functions below, never by importing this.
+// genres[] powers the Discover filter chips (design-approved).
 const books = [
   {
     id: 1,
@@ -37,6 +38,7 @@ const books = [
     reason: 'Because you liked The Martian',
     bg: '#00689E',
     fg: '#ffffff',
+    genres: ['Sci-Fi'],
   },
   {
     id: 2,
@@ -46,6 +48,7 @@ const books = [
     reason: 'Because you like Fantasy',
     bg: '#FFDD00',
     fg: '#0B2A3C',
+    genres: ['Fantasy', 'Historical'],
   },
   {
     id: 3,
@@ -55,6 +58,7 @@ const books = [
     reason: 'Because you like Self-help',
     bg: '#0B2A3C',
     fg: '#FFDD00',
+    genres: ['Self-help'],
   },
   {
     id: 4,
@@ -64,6 +68,7 @@ const books = [
     reason: 'Readers like you loved this',
     bg: '#BFE6F7',
     fg: '#0B2A3C',
+    genres: ['Fantasy'],
   },
 ];
 
