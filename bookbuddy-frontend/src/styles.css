@@ -37,6 +37,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 16px;
   padding: 12px 24px;
   background: #ffffff;
@@ -179,10 +180,11 @@ button {
   border-color: var(--blue);
 }
 
-/* Navy on yellow — allowed pairing */
+/* Navy on yellow — allowed pairing; navy border makes the
+   selected state pass WCAG state contrast (aria-pressed for AT) */
 .chip[aria-pressed='true'] {
   background: var(--yellow);
-  border-color: var(--yellow);
+  border: 2px solid var(--navy);
   color: var(--navy);
 }
 
