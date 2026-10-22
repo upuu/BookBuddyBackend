@@ -28,7 +28,15 @@ export default function App() {
           }
         />
       )}
-      {page === 'book' && <BookDetail bookId={selectedBookId} />}
+      {page === 'book' && (
+        <BookDetail
+          bookId={selectedBookId}
+          currentStatus={selectedBookId ? lists[selectedBookId] : undefined}
+          onSetStatus={(status) =>
+            setLists((prev) => ({ ...prev, [selectedBookId]: status }))
+          }
+        />
+      )}
       {page === 'lists' && <Lists />}
     </>
   );
