@@ -1,34 +1,54 @@
 import { useEffect, useState } from 'react';
-import { getRecommendations } from '../api.js';
+import {
+  getRecommendations,
+  CURRENT_USER,
+  SERVER_ERROR_MESSAGE,
+} from '../api.js';
 import Cover from '../components/Cover.jsx';
 import Stars from '../components/Stars.jsx';
 
 const FILTERS = ['All', 'Sci-Fi', 'Fantasy', 'Mystery', 'Self-help'];
 
 export default function Discover({
+  catalog,
   onOpenBook = () => {},
   onAddToList = () => {},
 }) {
   const [books, setBooks] = useState([]);
+  const [algorithm, setAlgorithm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState('All');
 
   useEffect(() => {
     let alive = true;
-    getRecommendations().then((data) => {
-      if (!alive) return;
-      setBooks(data);
-      setLoading(false);
-    });
+    setLoading(true);
+    setError(null);
+
+    getRecommendations(CURRENT_USER, catalog)
+      .then((result) => {
+        if (!alive) return;
+        setBooks(result.books);
+        setAlgorithm(result.algorithm);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!alive) return;
+        setError(SERVER_ERROR_MESSAGE);
+        setLoading(false);
+      });
+
     return () => {
       alive = false;
     };
-  }, []);
+  }, [catalog]);
 
   const visibleBooks =
     activeFilter === 'All'
       ? books
-      : books.filter((book) => (book.genres || []).includes(activeFilter));
+      : books.filter(
+          (book) => book.genre && book.genre.toLowerCase() === activeFilter.toLowerCase()
+        );
 
   return (
     <main className="page">
@@ -56,6 +76,7 @@ export default function Discover({
       </div>
 
       <h2>Top picks for you</h2>
+      {algorithm && <p className="algo-line">Recommended by: {algorithm}</p>}
 
       {loading && (
         <p role="status" className="page-sub">
@@ -63,7 +84,13 @@ export default function Discover({
         </p>
       )}
 
-      {!loading && visibleBooks.length === 0 && (
+      {error && (
+        <p role="alert" className="error-note">
+          {error}
+        </p>
+      )}
+
+      {!loading && !error && visibleBooks.length === 0 && (
         <p className="empty-note">No books in this genre yet.</p>
       )}
 
@@ -81,8 +108,14 @@ export default function Discover({
 
             <h3 className="card-title">{book.title}</h3>
             <p className="card-author">{book.author}</p>
-            <Stars value={book.rating} numeric />
-            <p className="card-reason">{book.reason}</p>
+
+            {book.rating == null ? (
+              <p className="rating-soon">Rating coming soon</p>
+            ) : (
+              <Stars value={book.rating} numeric />
+            )}
+
+            <p className="card-reason">{book.genre}</p>
 
             <button
               type="button"

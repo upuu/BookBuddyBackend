@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getBook, getReviews, STATUS } from '../api.js';
+import { getReviews, STATUS } from '../api.js';
 import Cover from '../components/Cover.jsx';
 import Stars from '../components/Stars.jsx';
 
@@ -7,27 +7,19 @@ const LIST_OPTIONS = [STATUS.want, STATUS.reading, STATUS.read];
 
 export default function BookDetail({
   bookId,
+  catalog,
   currentStatus,
   onSetStatus = () => {},
 }) {
-  const [book, setBook] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
 
   useEffect(() => {
     let alive = true;
-    setLoading(true);
     setRating(0);
     setReviewText('');
 
-    getBook(bookId).then((data) => {
-      if (alive) {
-        setBook(data);
-        setLoading(false);
-      }
-    });
     getReviews(bookId).then((data) => {
       if (alive) setReviews(data);
     });
@@ -37,15 +29,7 @@ export default function BookDetail({
     };
   }, [bookId]);
 
-  if (loading) {
-    return (
-      <main className="page">
-        <p role="status" className="page-sub">
-          Loading book&hellip;
-        </p>
-      </main>
-    );
-  }
+  const book = (catalog || []).find((entry) => entry.id === bookId);
 
   if (!book) {
     return (
@@ -84,11 +68,15 @@ export default function BookDetail({
           <h1>{book.title}</h1>
           <p className="detail-author">{book.author}</p>
 
-          <p className="detail-rating">
-            <Stars value={book.rating} numeric />
-            <span aria-hidden="true"> &middot; </span>
-            <span>[rating count]</span>
-          </p>
+          {book.rating == null ? (
+            <p className="rating-soon">Rating coming soon</p>
+          ) : (
+            <p className="detail-rating">
+              <Stars value={book.rating} numeric />
+              <span aria-hidden="true"> &middot; </span>
+              <span>[rating count]</span>
+            </p>
+          )}
 
           <p className="detail-desc">
             [Book description loaded from the Google Books API]

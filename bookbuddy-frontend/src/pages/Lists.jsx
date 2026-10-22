@@ -1,30 +1,20 @@
-import { useEffect, useState } from 'react';
-import { getRecommendations, STATUS } from '../api.js';
+import { useState } from 'react';
+import { STATUS } from '../api.js';
 import Cover from '../components/Cover.jsx';
 
 const TAB_KEYS = Object.keys(STATUS); // ['want', 'reading', 'read']
 
 export default function Lists({
+  catalog,
   lists,
   onMove = () => {},
   onRemove = () => {},
 }) {
-  const [catalog, setCatalog] = useState([]);
   const [activeTab, setActiveTab] = useState('reading'); // default: Currently Reading
-
-  useEffect(() => {
-    let alive = true;
-    getRecommendations().then((data) => {
-      if (alive) setCatalog(data);
-    });
-    return () => {
-      alive = false;
-    };
-  }, []);
 
   const rows = Object.entries(lists)
     .filter(([, statusKey]) => statusKey === activeTab)
-    .map(([id]) => catalog.find((book) => book.id === Number(id)))
+    .map(([id]) => (catalog || []).find((book) => book.id === id))
     .filter(Boolean);
 
   return (

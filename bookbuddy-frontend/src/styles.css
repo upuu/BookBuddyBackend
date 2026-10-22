@@ -602,3 +602,31 @@ button {
   margin: 0;
   text-decoration: underline;
 }
+
+/* --- Backend connection states --- */
+.error-note {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.algo-line {
+  margin: -8px 0 16px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.rating-soon {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.detail-content .rating-soon {
+  margin-top: 10px;
+}

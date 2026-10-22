@@ -3,11 +3,15 @@
 // Components must never call fetch() directly; they import the
 // async functions below.
 //
-// Everything here is mock data for now. Later these functions
-// switch to the Flask backend (http://localhost:5000, e.g.
-// POST /api/recommendations) and bookstore info (Google Books)
-// will come through the backend as well.
+// Books and recommendations now come from the Flask backend
+// (proxied by Vite in dev: /api/* -> http://localhost:5000).
+// Reviews are still mocked — there is no backend endpoint yet.
 // ============================================================
+
+export const CURRENT_USER = 'Alice';
+
+export const SERVER_ERROR_MESSAGE =
+  "Can't reach the BookBuddy server. Start the Flask backend (python app.py), then refresh this page.";
 
 export const STATUS = {
   want: 'Want to Read',
@@ -26,70 +30,63 @@ export const GENRES = [
   'Self-help',
 ];
 
-// Mock catalog. Kept private on purpose: pages must get books
-// through the async functions below, never by importing this.
-// genres[] powers the Discover filter chips (design-approved).
-const books = [
-  {
-    id: 1,
-    title: 'Project Hail Mary',
-    author: 'Andy Weir',
-    rating: 4.5,
-    reason: 'Because you liked The Martian',
-    bg: '#00689E',
-    fg: '#ffffff',
-    genres: ['Sci-Fi'],
-  },
-  {
-    id: 2,
-    title: 'Circe',
-    author: 'Madeline Miller',
-    rating: 4.4,
-    reason: 'Because you like Fantasy',
-    bg: '#FFDD00',
-    fg: '#0B2A3C',
-    genres: ['Fantasy', 'Historical'],
-  },
-  {
-    id: 3,
-    title: 'Atomic Habits',
-    author: 'James Clear',
-    rating: 4.6,
-    reason: 'Because you like Self-help',
-    bg: '#0B2A3C',
-    fg: '#FFDD00',
-    genres: ['Self-help'],
-  },
-  {
-    id: 4,
-    title: 'The Midnight Library',
-    author: 'Matt Haig',
-    rating: 4.2,
-    reason: 'Readers like you loved this',
-    bg: '#BFE6F7',
-    fg: '#0B2A3C',
-    genres: ['Fantasy'],
-  },
+// Cover palette, applied by index to backend books (no images,
+// no gradients — solid color boxes showing the title).
+const COVER_PALETTE = [
+  { bg: '#00689E', fg: '#ffffff' },
+  { bg: '#FFDD00', fg: '#0B2A3C' },
+  { bg: '#0B2A3C', fg: '#FFDD00' },
+  { bg: '#BFE6F7', fg: '#0B2A3C' },
 ];
 
-// Mock reviews — same for every book until the backend lands.
+const slug = (title) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
+// Mock reviews — no backend endpoint yet, same for every book.
 const reviews = [
   { user: 'Bob', stars: 5, text: '[Review text]' },
   { user: 'Diana', stars: 4, text: '[Review text]' },
 ];
 
-// Simulates network latency so loading states behave realistically.
+// Simulates network latency for the mocked endpoint.
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function getRecommendations() {
-  await delay(120);
-  return books.map((book) => ({ ...book }));
+export async function getBooks() {
+  const response = await fetch('/api/books');
+  if (!response.ok) {
+    throw new Error(`GET /api/books failed with ${response.status}`);
+  }
+  const data = await response.json();
+
+  return (data.books || []).map((book, index) => ({
+    id: slug(book.title),
+    title: book.title,
+    author: book.author,
+    genre: book.genre,
+    rating: null, // backend has no ratings yet — show "Rating coming soon"
+    ...COVER_PALETTE[index % COVER_PALETTE.length],
+  }));
 }
 
-export async function getBook(id) {
-  await delay(120);
-  const book = books.find((b) => b.id === id);
-  return book ? { ...book } : null;
+export async function getRecommendations(user = CURRENT_USER, catalog = []) {
+  const response = await fetch('/api/recommendations', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user }),
+  });
+  if (!response.ok) {
+    throw new Error(`POST /api/recommendations failed with ${response.status}`);
+  }
+  const data = await response.json();
+
+  const books = (data.recommendations || [])
+    .map((rec) => catalog.find((book) => book.title === rec.title))
+    .filter(Boolean);
+
+  return { books, algorithm: data.algorithm };
 }
 
 export async function getReviews(bookId) {
