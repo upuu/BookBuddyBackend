@@ -533,3 +533,70 @@ button {
 .star-btn:hover {
   background: var(--sky);
 }
+
+/* --- My Lists --- */
+.list-tabs {
+  margin-bottom: 20px;
+}
+
+.list-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+
+.mini-cover {
+  flex-shrink: 0;
+}
+
+.mini-cover .cover-title {
+  font-size: 0.65rem;
+  padding: 4px;
+}
+
+.row-info {
+  flex: 1;
+  min-width: 140px;
+}
+
+.row-title {
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.row-author {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.move-select {
+  min-height: 44px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid var(--field);
+  border-radius: 10px;
+  color: var(--navy);
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.move-select:focus {
+  border-color: var(--blue);
+}
+
+.row-remove {
+  margin: 0;
+  text-decoration: underline;
+}

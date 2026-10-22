@@ -14,7 +14,9 @@ export default function App() {
   return (
     <>
       {/* Onboarding has no nav bar (per spec) */}
-      {page !== 'onboarding' && <Nav />}
+      {page !== 'onboarding' && (
+        <Nav page={page === 'book' ? 'discover' : page} onNavigate={setPage} />
+      )}
 
       {page === 'onboarding' && <Onboarding onNavigate={setPage} />}
       {page === 'discover' && (
@@ -37,7 +39,21 @@ export default function App() {
           }
         />
       )}
-      {page === 'lists' && <Lists />}
+      {page === 'lists' && (
+        <Lists
+          lists={lists}
+          onMove={(id, status) =>
+            setLists((prev) => ({ ...prev, [id]: status }))
+          }
+          onRemove={(id) =>
+            setLists((prev) => {
+              const next = { ...prev };
+              delete next[id];
+              return next;
+            })
+          }
+        />
+      )}
     </>
   );
 }
