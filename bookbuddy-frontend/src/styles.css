@@ -1,0 +1,33 @@
+/* BookBuddy theme — values fixed by design spec, do not change without approval */
+:root {
+  --navy: #0b2a3c; /* text */
+  --blue: #00689e; /* primary */
+  --yellow: #ffdd00; /* accent */
+  --sky: #eaf6fc; /* onboarding background */
+  --line: #d3e6f0; /* borders */
+  --muted: #4a6272; /* secondary text */
+  --gold: #7a5c00; /* stars */
+  --field: #8fa9b8; /* input borders */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  background: #ffffff;
+  color: var(--navy);
+}
+
+/* Visible keyboard focus everywhere (WCAG 2.1 AA) */
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+button {
+  font-family: inherit;
+}
