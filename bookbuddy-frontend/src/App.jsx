@@ -16,7 +16,7 @@ export default function App() {
       {/* Onboarding has no nav bar (per spec) */}
       {page !== 'onboarding' && <Nav />}
 
-      {page === 'onboarding' && <Onboarding />}
+      {page === 'onboarding' && <Onboarding onNavigate={setPage} />}
       {page === 'discover' && <Discover />}
       {page === 'book' && <BookDetail bookId={selectedBookId} />}
       {page === 'lists' && <Lists />}
